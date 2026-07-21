@@ -1,4 +1,3 @@
-From Gilly Mon Sep 17 00:00:00 2001
 From: Gilly <gilly@example.com>
 Date: Fri, 17 Apr 2026 00:00:00 +0000
 Subject: [PATCH] net: airoha: ppe: Init PPE hardware at TC block bind time for bridge/AP mode
@@ -15,11 +14,12 @@ Fix by calling airoha_ppe_start_offload() at FLOW_BLOCK_BIND time, when
 fw4 first associates the flowtable with the airoha device. The NPU firmware
 is loaded by ~12s into boot; fw4 runs at ~25-40s, so the NPU is always ready.
 
+Signed-off-by: Gilly <gilly@example.com>
 ---
  drivers/net/ethernet/airoha/airoha_eth.c | 11 ++++++++-
- drivers/net/ethernet/airoha/airoha_eth.h |  1 +
- drivers/net/ethernet/airoha/airoha_ppe.c | 24 ++++++++++++++++++++++
- 3 files changed, 35 insertions(+), 1 deletion(-)
+ drivers/net/ethernet/airoha/airoha_eth.h |  2 ++
+ drivers/net/ethernet/airoha/airoha_ppe.c | 29 +++++++++++++++++++++++--
+ 3 files changed, 39 insertions(+), 3 deletions(-)
 
 --- a/drivers/net/ethernet/airoha/airoha_eth.c
 +++ b/drivers/net/ethernet/airoha/airoha_eth.c
@@ -49,8 +49,9 @@ is loaded by ~12s into boot; fw4 runs at ~25-40s, so the NPU is always ready.
  		block_cb = flow_block_cb_lookup(f->block, cb, dev);
 --- a/drivers/net/ethernet/airoha/airoha_eth.h
 +++ b/drivers/net/ethernet/airoha/airoha_eth.h
-@@ -718,6 +718,7 @@ int airoha_ppe_setup_tc_block_cb(struct airoha_ppe_dev *dev, void *type_data);
+@@ -718,6 +718,8 @@ int airoha_ppe_setup_tc_block_cb(struct airoha_ppe_dev *dev, void *type_data);
 +void airoha_ppe_start_offload(struct airoha_eth *eth);
++int airoha_ppe_offload_setup(struct airoha_eth *eth);
  int airoha_ppe_init(struct airoha_eth *eth);
  void airoha_ppe_deinit(struct airoha_eth *eth);
  void airoha_ppe_init_upd_mem(struct airoha_gdm_port *port);
@@ -84,3 +85,22 @@ is loaded by ~12s into boot; fw4 runs at ~25-40s, so the NPU is always ready.
   * airoha_ppe_init - initialize PPE subsystem
   * @eth: airoha ethernet device
   *
+@@ -3100,7 +3124,7 @@ static int airoha_ppe_wait_for_npu_init(struct airoha_eth *eth)
+ 	return err;
+ }
+ 
+-static int airoha_ppe_offload_setup(struct airoha_eth *eth)
++int airoha_ppe_offload_setup(struct airoha_eth *eth)
+ {
+ 	struct airoha_npu *npu = airoha_ppe_npu_get(eth);
+ 	struct airoha_ppe *ppe = eth->ppe;
+@@ -3140,6 +3164,9 @@ error_npu_put:
+ 	airoha_npu_put(npu);
+ 
+ 	return err;
++}
++EXPORT_SYMBOL_GPL(airoha_ppe_offload_setup);
++
+ /**
+  * airoha_ppe_init - initialize PPE subsystem
+  * @eth: airoha ethernet device
