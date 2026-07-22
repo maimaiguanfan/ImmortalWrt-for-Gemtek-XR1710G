@@ -49,6 +49,8 @@ jobs:
       - name: Install feeds
         run: |
           ./scripts/feeds update -a
+          rm -rf feeds/luci/applications/luci-app-scutclient/
+          git clone https://github.com/maimaiguanfan/luci-app-scutclient.git feeds/luci/applications/luci-app-scutclient --depth=1
           ./scripts/feeds install -a
 
       - name: Configure
