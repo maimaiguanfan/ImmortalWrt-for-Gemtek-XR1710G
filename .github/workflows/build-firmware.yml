@@ -59,11 +59,11 @@ jobs:
           make defconfig
 
       - name: Download sources
-        run: make download -j$(nproc)
+        run: make download -j50
 
       - name: Build Firmware
         run: |
-          make -j2 world 2>&1 | tee build.log
+          make -j$(nproc) || (make -j1 V=sc 2>&1 | tee -a build.log)
 
       - name: Check build status
         run: |
