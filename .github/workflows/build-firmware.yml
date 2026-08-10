@@ -59,6 +59,22 @@ jobs:
       - name: Install feeds
         run: |
           ./scripts/feeds update -a
+          rm -rf package/lucky/
+          mkdir package/lucky/
+          git clone https://github.com/gdy666/luci-app-lucky.git package/lucky/ --depth=1
+
+          rm -rf feeds/luci/applications/luci-app-openclash/
+          rm -rf ./luci-app-openclash
+          git clone https://github.com/vernesong/OpenClash.git ./luci-app-openclash --depth=1
+          mv ./luci-app-openclash/luci-app-openclash feeds/luci/applications/luci-app-openclash
+          rm -rf ./luci-app-openclash
+
+          rm -rf package/luci-app-easytier/
+          mkdir package/luci-app-easytier/
+          git clone https://github.com/EasyTier/luci-app-easytier.git package/luci-app-easytier/ --depth=1
+
+          rm -rf package/luci-app-taskplan
+          git clone https://github.com/sirpdboy/luci-app-taskplan.git package/luci-app-taskplan --depth=1
           ./scripts/feeds install -a
 
       - name: Configure
