@@ -83,12 +83,12 @@ jobs:
           make defconfig
 
       - name: Download sources
-        run: make download -j$(nproc)
+        run: make download -j50
 
       - name: Build Firmware
         run: |
           set -o pipefail
-          if ! make -j2 world 2>&1 | tee build.log; then
+          if ! make -j$(nproc) world 2>&1 | tee build.log; then
             echo "=== Parallel build failed, re-running with V=sc to expose real error ==="
             make -j1 V=sc 2>&1 | tee -a build.log
             exit 1
