@@ -95,7 +95,7 @@
 };
 
 &en7581_pinctrl {
-	gpio-ranges = <&en7581_pinctrl 0 13 47>;
+	gpio-ranges = <&en7581_pinctrl 0 13 50>;
 
 	mdio_pins: mdio-pins {
 		mux {
@@ -250,6 +250,7 @@
 
 	airoha,scu = <&scuclk>;
 	airoha,x2-mode;
+	airoha,np-scu = <&scuclk>;
 
 	pinctrl-names = "default";
 	pinctrl-0 = <&pcie0_rst_pins>;
